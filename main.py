@@ -1,4 +1,6 @@
 import numpy as np
+import itertools
+
 
 
 def get_ecost(net_probs, network, min_centers):
@@ -34,6 +36,23 @@ def find_center(probs, points, centers):
             min_dis = dis
     return min_center
 
+
+def exact_kcenter(net_probs, network, k):
+    n = network.shape[0]
+    z = network.shape[1]
+    min_cost = np.inf
+    min_center = None
+    candidates = set([(i,j) for i in range(n) for j in range(z)])
+    for subset in itertools.combinations(candidates, k):
+        centers = np.array(list(subset))
+        min_centers = np.zeros((n,0))
+        for i in range(n):
+            min_centers[i] = find_center(net_probs[i], network[i], centers)
+        cost = get_ecost(net_probs, network, min_center)
+        if cost < min_cost:
+            min_center = min_centers
+            min_cost = cost
+    return min_center
 
 def run():
     print(get_ecost(np.array([[0.25, 0.25, 0.25, 0.25], [0.25, 0.25, 0.25, 0.25]]),
