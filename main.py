@@ -76,18 +76,6 @@ def convert_pokemon_data(path, n, t):
             network[i][j][1] = center[1]
     
     return net_probs, network
-        
-    def get_center(self):
-        if self.freq == 0:
-            return [(self.min_x+self.max_x)/2, (self.min_y+self.max_y)/2]
-        return [sum(i)/len(self.points) for i in zip(*self.points)]
-    
-    def is_in(self, lat, lng):
-        if lat < self.min_x or not self.last_x and lat >= self.max_x or self.last_x and lat > self.max_x:
-            return False
-        if lng < self.min_y or not self.last_y and lng >= self.max_y or self.last_y and lng > self.max_y:
-            return False
-        return True
 
 def get_ecost(net_probs, network, min_centers):
     n = network.shape[0]
