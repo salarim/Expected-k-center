@@ -167,12 +167,18 @@ def test(net_probs, network, k):
 
 
 def run():
-    # net_probs = np.array([[0.5, 0.5], [0.5, 0.5], [0.5, 0.5]])
-    # network = np.array([[[0,0], [3,3]], [[2,1], [1,3]], [[3,1], [0,3]]])
+    test_cases = [(5, 2, 2),
+                (5, 3, 2),
+                (5, 4, 2),
+                (10, 2, 2),
+                (10, 3, 2),
+                (10, 4, 2),
+                (50, 2, 2)]
 
-    net_probs, network = convert_pokemon_data('pokemon-spawns.csv', 2, 2)
-
-    print(test(net_probs, network, 2))
+    for n, t, k in test_cases:
+        net_probs, network = convert_pokemon_data('pokemon-spawns.csv', n, t)
+        print(n, t, k)
+        print(test(net_probs, network, k))
 
 if __name__ == '__main__':
     run()
