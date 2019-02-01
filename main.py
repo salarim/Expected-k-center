@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import itertools
+import matplotlib.pyplot as plt
 
 
 class Grid:
@@ -148,6 +149,22 @@ def approx_kcenter(net_probs, network, k):
         centers = np.vstack([centers, new_center])
     return centers
 
+def plot(net_probs, network, exact_centers, approx_centers, path):
+    n = network.shape[0]
+    for i in range(n):
+        x = network[i][:,0]
+        y = network[i][:,1]
+        area = (10 * net_probs[i])**2
+        plt.scatter(x, y, s=area, marker='o', c='#000000')
+
+        # for j in range(len(x)):
+        #     plt.text(x[j] + 0.03, y[j], 'P'+str(i)+str(j))
+
+    plt.scatter(exact_centers[:,0], exact_centers[:,1], marker='X', c='#FF0000')
+    plt.scatter(approx_centers[:,0], approx_centers[:,1], marker='^', c='#0000FF')
+
+    plt.savefig(path)
+
 def test(net_probs, network, k):
     exact_center = exact_kcenter(net_probs, network, k)
     approx_center = approx_kcenter(net_probs, network, k)
@@ -168,7 +185,11 @@ def test(net_probs, network, k):
 
 def run():
     test_cases = [(5, 2, 2),
+                (5, 2, 3),
+                (5, 2, 4),
                 (5, 3, 2),
+                (5, 3, 3),
+                (5, 3, 4),
                 (5, 4, 2),
                 (10, 2, 2),
                 (10, 3, 2),
@@ -178,7 +199,10 @@ def run():
     for n, t, k in test_cases:
         net_probs, network = convert_pokemon_data('pokemon-spawns.csv', n, t)
         print(n, t, k)
-        print(test(net_probs, network, k))
+        exact_center, approx_center, exact_cost, approx_cost = test(net_probs, network, k)
+        path = 'images/' + str(n) + ',' + str(t*t) + ',' + str(k) + '.png'
+        plot(net_probs, network, exact_center, approx_center, path)
+        print(exact_center, approx_center, exact_cost, approx_cost)
 
 if __name__ == '__main__':
     run()
