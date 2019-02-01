@@ -164,6 +164,7 @@ def plot(net_probs, network, exact_centers, approx_centers, path):
     plt.scatter(approx_centers[:,0], approx_centers[:,1], marker='^', c='#0000FF')
 
     plt.savefig(path)
+    plt.gcf().clear()
 
 def test(net_probs, network, k):
     exact_center = exact_kcenter(net_probs, network, k)
