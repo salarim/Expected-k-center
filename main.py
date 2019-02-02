@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import itertools
 import matplotlib.pyplot as plt
+import time
 
 
 class Grid:
@@ -154,21 +155,25 @@ def plot(net_probs, network, exact_centers, approx_centers, path):
     for i in range(n):
         x = network[i][:,0]
         y = network[i][:,1]
-        area = (10 * net_probs[i])**2
-        plt.scatter(x, y, s=area, marker='o', c='#000000')
+        # area = (10 * net_probs[i])**2
+        plt.scatter(x, y, marker='o')
 
         # for j in range(len(x)):
-        #     plt.text(x[j] + 0.03, y[j], 'P'+str(i)+str(j))
+        #     plt.text(x[j] + 0.03, y[j], 'P'+str(i+1)+str(j+1), fontsize=6)
 
-    plt.scatter(exact_centers[:,0], exact_centers[:,1], marker='X', c='#FF0000')
-    plt.scatter(approx_centers[:,0], approx_centers[:,1], marker='^', c='#0000FF')
+    plt.scatter(exact_centers[:,0], exact_centers[:,1], s=50, marker='x', c='#000000')
+    plt.scatter(approx_centers[:,0], approx_centers[:,1], s =50, marker='^', c='#000000')
 
     plt.savefig(path)
     plt.gcf().clear()
 
 def test(net_probs, network, k):
+    start = time.time()
     exact_center = exact_kcenter(net_probs, network, k)
+    time1 = time.time()
     approx_center = approx_kcenter(net_probs, network, k)
+    time2 = time.time()
+
     n = network.shape[0]
 
     exact_min_center = np.zeros((n,2))
@@ -181,7 +186,7 @@ def test(net_probs, network, k):
     exact_cost = get_ecost(net_probs, network, exact_min_center)
     approx_cost = get_ecost(net_probs, network, approx_min_center)
 
-    return exact_center, approx_center, exact_cost, approx_cost
+    return exact_center, approx_center, exact_cost, approx_cost, (time1-start), (time2-time1)
 
 
 def run():
@@ -199,11 +204,12 @@ def run():
 
     for n, t, k in test_cases:
         net_probs, network = convert_pokemon_data('pokemon-spawns.csv', n, t)
-        print(n, t, k)
-        exact_center, approx_center, exact_cost, approx_cost = test(net_probs, network, k)
+        print(n, t*t, k)
+        exact_center, approx_center, exact_cost, approx_cost, exact_time, approx_time = test(net_probs, network, k)
         path = 'images/' + str(n) + ',' + str(t*t) + ',' + str(k) + '.png'
         plot(net_probs, network, exact_center, approx_center, path)
         print(exact_center, approx_center, exact_cost, approx_cost)
+        print(exact_time, approx_time)
 
 if __name__ == '__main__':
     run()
